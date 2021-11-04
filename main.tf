@@ -1,8 +1,25 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.27"
+    }
+  }
+  required_version = ">= 1.0.10"
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "internal-e"
+    workspaces {
+      name = "internal-e-js"
+    }
+  }
+}
+# region, key, and id will be picked up by workflow environment variables in GH -- jf 
 provider "aws" {
-  region = var.region
+  region = "us-east-1"
 }
 
-data "aws_availability_zones" "available" {}
+
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -64,8 +81,8 @@ resource "aws_db_instance" "education" {
   allocated_storage      = 5
   engine                 = "postgres"
   engine_version         = "13.1"
-  username               = "edu"
-  password               = var.db_password
+  username               = "internal-e-js"
+  password               = 38649Pat1!
   db_subnet_group_name   = aws_db_subnet_group.education.name
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.education.name
